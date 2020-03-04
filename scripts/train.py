@@ -14,18 +14,19 @@ def main(hparams):
 
     # most basic trainer, uses good defaults
     trainer = Trainer(
-        max_nb_epochs=hparams.max_nb_epochs,
+        max_epochs=hparams.max_epochs,
         gpus=hparams.gpus,
-        nb_gpu_nodes=hparams.nodes,
+        default_save_path="/workspace/results"
     )
     trainer.fit(model)
 
 
 if __name__ == "__main__":
     parser = ArgumentParser(add_help=False)
-    parser.add_argument("--gpus", type=str, default=None)
-    parser.add_argument("--nodes", type=int, default=1)
+    parser.add_argument("--gpus", type=int, default=1)
     parser.add_argument("--hash", type=str, default=None)
+
+    parser.add_argument("--max_epochs", default=2, type=int)
 
     # give the module a chance to add own params
     # good practice to define LightningModule speficic params in the module

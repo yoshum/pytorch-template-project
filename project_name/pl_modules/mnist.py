@@ -1,4 +1,5 @@
 import os
+import os.path as osp
 import torch
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
@@ -18,22 +19,25 @@ class MNISTLightningModule(pl.LightningModule):
         self.hparams = hparams
         self.net = build_net(None)
 
+    def forward(self, x):
+        return self.net(x)
+
     def training_step(self, batch, batch_idx):
         # REQUIRED
         x, y = batch
-        y_hat = self.net(x)
+        y_hat = self.forward(x)
         return {"loss": F.cross_entropy(y_hat, y)}
 
     def validation_step(self, batch, batch_idx):
         # OPTIONAL
         x, y = batch
-        y_hat = self.net(x)
+        y_hat = self.forward(x)
         return {"val_loss": F.cross_entropy(y_hat, y)}
 
     def validation_end(self, outputs):
         # OPTIONAL
         avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
-        return {"avg_val_loss": avg_loss}
+        return {"val_loss": avg_loss}
 
     def configure_optimizers(self):
         # REQUIRED
@@ -44,7 +48,7 @@ class MNISTLightningModule(pl.LightningModule):
     def train_dataloader(self):
         # REQUIRED
         return DataLoader(
-            MNIST(os.getcwd(), train=True, download=True, transform=train_transforms()),
+            MNIST(osp.expanduser("~"), train=True, download=True, transform=train_transforms()),
             batch_size=self.hparams.batch_size,
         )
 
@@ -52,7 +56,7 @@ class MNISTLightningModule(pl.LightningModule):
     def val_dataloader(self):
         # OPTIONAL
         return DataLoader(
-            MNIST(os.getcwd(), train=True, download=True, transform=eval_transforms()),
+            MNIST(osp.expanduser("~"), train=True, download=True, transform=eval_transforms()),
             batch_size=self.hparams.batch_size,
         )
 
@@ -60,7 +64,7 @@ class MNISTLightningModule(pl.LightningModule):
     def test_dataloader(self):
         # OPTIONAL
         return DataLoader(
-            MNIST(os.getcwd(), train=True, download=True, transform=eval_transforms()),
+            MNIST(osp.expanduser("~"), train=True, download=True, transform=eval_transforms()),
             batch_size=self.hparams.batch_size,
         )
 
@@ -75,6 +79,5 @@ class MNISTLightningModule(pl.LightningModule):
         parser.add_argument("--batch_size", default=32, type=int)
 
         # training specific (for this model)
-        parser.add_argument("--max_nb_epochs", default=2, type=int)
 
         return parser
