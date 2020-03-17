@@ -106,9 +106,10 @@ _run-tensorboard: _install-requirements
 
 jupyter: ## launch Jupyter Notebook in a docker container on port 61000
 	docker container run -it --rm --runtime=nvidia \
+		--name=$(USER)-jupyter \
 		$(common-options) \
+		-p $(jupy-port):$(jupy-port) \
 		$(docker-image) \
-		--port $(jupy-port):$(jupy-port) \
 		/bin/bash -c "cd /workspace/src; make _run-jupyter jupy-port=$(jupy-port)"
 
 _run-jupyter: _install-requirements
