@@ -48,7 +48,12 @@ class MNISTLightningModule(pl.LightningModule):
     def train_dataloader(self):
         # REQUIRED
         return DataLoader(
-            MNIST(osp.expanduser("~"), train=True, download=True, transform=train_transforms()),
+            MNIST(
+                osp.expanduser("~"),
+                train=True,
+                download=True,
+                transform=train_transforms(),
+            ),
             batch_size=self.hparams.batch_size,
         )
 
@@ -56,7 +61,12 @@ class MNISTLightningModule(pl.LightningModule):
     def val_dataloader(self):
         # OPTIONAL
         return DataLoader(
-            MNIST(osp.expanduser("~"), train=True, download=True, transform=eval_transforms()),
+            MNIST(
+                osp.expanduser("~"),
+                train=True,
+                download=True,
+                transform=eval_transforms(),
+            ),
             batch_size=self.hparams.batch_size,
         )
 
@@ -64,7 +74,12 @@ class MNISTLightningModule(pl.LightningModule):
     def test_dataloader(self):
         # OPTIONAL
         return DataLoader(
-            MNIST(osp.expanduser("~"), train=True, download=True, transform=eval_transforms()),
+            MNIST(
+                osp.expanduser("~"),
+                train=True,
+                download=True,
+                transform=eval_transforms(),
+            ),
             batch_size=self.hparams.batch_size,
         )
 

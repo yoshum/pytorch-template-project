@@ -16,7 +16,7 @@ def main(hparams):
     trainer = Trainer(
         max_epochs=hparams.max_epochs,
         gpus=hparams.gpus,
-        default_save_path="/workspace/results"
+        default_save_path="/workspace/results",
     )
     trainer.fit(model)
 
