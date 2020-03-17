@@ -23,7 +23,7 @@
 project_root/
 ├── data/
 ├── results/
-    └── logdir/
+│   └── logdir/
 └── src/
     ├── .git/
     ├── project_name/
