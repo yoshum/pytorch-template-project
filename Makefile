@@ -11,7 +11,7 @@ default-target = mnist
 apt-packages = 
 
 ## Name of a Docker image to use
-docker-image = yoshum/pytorch:1.3-py3.6-cuda10.1-ubuntu18.04
+docker-image = yoshum/pytorch:1.4-py3.6-cuda10.1-ubuntu18.04
 
 ## Add options to pass to `docker container run`
 ## They will be appended after the default option list defined below
