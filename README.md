@@ -61,8 +61,6 @@ project_root/
   - サブディレクトリの構造は実験ごとに設計する
   - Gitによるバージョン管理の対象外
     - 実験コードのバージョンと紐づけておく
-- `results/logs/`
-  - TensorBoard の `logdir`
 
 ### コンテナ
 
