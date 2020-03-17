@@ -100,19 +100,20 @@ tensorboard: ## launch TensorBoard in a docker container on port 60000
 		/bin/bash -c "cd /workspace/src; make _run-tensorboard tb-port=$(tb-port) logdir=$(logdir)"
 
 _run-tensorboard: _install-requirements
-	sudo -E pip install tensorboard
-	tensorboard --logdir=$(logdir) --port=$(tb-port)
+	python -m pip install --user tensorboard
+	tensorboard --logdir=$(logdir) --port=$(tb-port) --bind_all
 
 
 jupyter: ## launch Jupyter Notebook in a docker container on port 61000
 	docker container run -it --rm --runtime=nvidia \
 		--name=$(USER)-jupyter \
-		$(common-options) \
+		--name=$(USER)-jupyter \
 		-p $(jupy-port):$(jupy-port) \
+		$(common-options) \
 		$(docker-image) \
 		/bin/bash -c "cd /workspace/src; make _run-jupyter jupy-port=$(jupy-port)"
 
-_run-jupyter: _install-requirements
+	python -m pip install --user jupyter
 	sudo -E pip install jupyter
 	cd /workspace; jupyter notebook --no-browser --ip=0.0.0.0 --port=$(jupy-port)
 
