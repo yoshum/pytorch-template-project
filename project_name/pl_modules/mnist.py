@@ -26,18 +26,41 @@ class MNISTLightningModule(pl.LightningModule):
         # REQUIRED
         x, y = batch
         y_hat = self.forward(x)
-        return {"loss": F.cross_entropy(y_hat, y)}
+        loss = F.cross_entropy(y_hat, y)
+        accuracy = self.accuracy(y_hat, y)
+        return {
+            "loss": loss,
+            "log": {"loss/train": loss, "acc/train": accuracy},
+            "progress_bar": {"acc/train": accuracy},
+        }
 
     def validation_step(self, batch, batch_idx):
         # OPTIONAL
         x, y = batch
         y_hat = self.forward(x)
-        return {"val_loss": F.cross_entropy(y_hat, y)}
+        return {
+            "loss": F.cross_entropy(y_hat, y),
+            "acc": self.accuracy(y_hat, y),
+            "batch_size": y.size(0),
+        }
 
-    def validation_end(self, outputs):
+    def validation_epoch_end(self, outputs):
         # OPTIONAL
-        avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
-        return {"val_loss": avg_loss}
+        loss = self.sample_weighted_average(outputs, "loss")
+        acc = self.sample_weighted_average(outputs, "acc")
+        logs = {"val_loss": loss, "loss/val": loss, "acc/val": acc}
+        return {"log": logs, "progress_bar": {"acc/val": acc}}
+
+    def accuracy(self, scores, y):
+        _, prediction = torch.max(scores, dim=1)
+        return (prediction == y).sum(dtype=float) / y.size(0)
+
+    def sample_weighted_average(self, outputs, key):
+        values = torch.stack([x[key] for x in outputs])
+        batch_sizes = torch.tensor(
+            [x["batch_size"] for x in outputs], device=values.device
+        )
+        return (batch_sizes * values).sum() / batch_sizes.sum()
 
     def configure_optimizers(self):
         # REQUIRED
