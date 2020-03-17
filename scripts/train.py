@@ -29,9 +29,9 @@ def main(hparams):
 if __name__ == "__main__":
     parser = ArgumentParser(add_help=False)
     parser.add_argument("--gpus", type=int, default=1)
-    parser.add_argument("--hash", type=str, default=None)
+    parser.add_argument("--hash", type=str, default="")
 
-    parser.add_argument("--max_epochs", default=2, type=int)
+    parser.add_argument("--max_epochs", default=100, type=int)
 
     # give the module a chance to add own params
     # good practice to define LightningModule speficic params in the module
