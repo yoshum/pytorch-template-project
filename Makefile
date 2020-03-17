@@ -8,7 +8,7 @@ default-target = mnist
 
 ## Packages that need to be installed in a container via `apt`
 # Required `pip` packages should be given in `requirements.txt`
-apt-packages = git
+apt-packages = 
 
 ## Name of a Docker image to use
 docker-image = yoshum/pytorch:1.3-py3.6-cuda10.1-ubuntu18.04
@@ -34,8 +34,10 @@ mnist: _install-requirements ## run the MNIST training script (should be invoked
 ### 
 
 _install-requirements:
+ifneq ($(apt-packages),)
 	sudo -E apt update -y
 	sudo -E apt install -y $(apt-packages)
+endif
 	python -m pip install --user --upgrade pip
 	python -m pip install --user -r requirements.txt
 
@@ -59,7 +61,7 @@ common-options := \
 target = $(default-target)
 run: ## execute "make $(target)" in a docker container
 	docker container run -it --rm --runtime=nvidia \
-		$(common-options) \
+		/bin/bash -c "cd /workspace/src; make $(target) hash='$(shell git rev-parse HEAD)' options='$(options)'"
 		$(docker-image) \
 		/bin/bash -c "cd /workspace/src; make $(target)"
 
