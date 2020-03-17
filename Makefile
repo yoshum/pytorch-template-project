@@ -47,7 +47,6 @@ endif
 
 host-src := $(shell pwd)
 host-data := $(shell realpath ../data)
-host-results := $(shell realpath ../results)
 
 common-options := \
 	-it --rm --runtime=nvidia \
