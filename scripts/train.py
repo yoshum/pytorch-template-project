@@ -3,9 +3,14 @@ This file runs the main training/val loop, etc...
 using Lightning Trainer
 """
 from pytorch_lightning import Trainer
+from pytorch_lightning.loggers import TensorBoardLogger
 from argparse import ArgumentParser
 
 import project_name.pl_modules as pl_modules
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 
 def main(hparams):
