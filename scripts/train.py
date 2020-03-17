@@ -21,7 +21,7 @@ def main(hparams):
     trainer = Trainer(
         max_epochs=hparams.max_epochs,
         gpus=hparams.gpus,
-        default_save_path="/workspace/results",
+        logger=TensorBoardLogger(save_dir="/workspace/results", name="mnist_logs",),
     )
     trainer.fit(model)
 
