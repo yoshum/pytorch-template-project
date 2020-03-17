@@ -63,9 +63,10 @@ common-options := \
 target = $(default-target)
 run: ## execute "make $(target)" in a docker container
 	docker container run -it --rm --runtime=nvidia \
-		/bin/bash -c "cd /workspace/src; make $(target) hash='$(shell git rev-parse HEAD)' options='$(options)'"
+		--name=$(USER)-$(target) \
+		$(common-options) \
 		$(docker-image) \
-		/bin/bash -c "cd /workspace/src; make $(target)"
+		/bin/bash -c "cd /workspace/src; make $(target) hash='$(shell git rev-parse HEAD)' options='$(options)'"
 
 run-remote: ## execute "make $(target)" in a docker container on $(remote-host)
 	make sync-codes remote-host=$(remote-host)
@@ -83,17 +84,19 @@ fetch-results: ## fetch results from $(remote-host)
 
 run-container: ## run a container and execute `bash`
 	docker container run -it --rm --runtime=nvidia \
+		--name=$(USER)-docker-container \
 		$(common-options) \
 		$(docker-image) \
 		/bin/bash
 
 
-logdir = /workspace/results/logs
+logdir = /workspace/results
 tensorboard: ## launch TensorBoard in a docker container on port 60000
 	docker container run -it --rm --runtime=nvidia \
+		--name=$(USER)-tensorboard \
 		$(common-options) \
+		-p $(tb-port):$(tb-port) \
 		$(docker-image) \
-		--port $(tb-port):$(tb-port) \
 		/bin/bash -c "cd /workspace/src; make _run-tensorboard tb-port=$(tb-port) logdir=$(logdir)"
 
 _run-tensorboard: _install-requirements
