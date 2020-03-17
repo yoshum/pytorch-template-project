@@ -26,9 +26,12 @@ jupy-port = 61000
 ### targets that run an executable script in a container
 
 mnist: _install-requirements ## run the MNIST training script (should be invoked in a container)
-	PYTHONPATH=$(shell pwd):$(PYTHONPATH) \
-		python scripts/train.py \
-		--hash=$(shell git rev-parse HEAD)
+ifeq ($(hash),)
+	PYTHONPATH=$(shell pwd):$(PYTHONPATH) python scripts/train.py $(options)
+else
+	PYTHONPATH=$(shell pwd):$(PYTHONPATH) python scripts/train.py \
+		--hash=$(hash) $(options)
+endif
 
 
 ### 
