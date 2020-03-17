@@ -1,4 +1,3 @@
-import os
 import os.path as osp
 import torch
 from torch.nn import functional as F
@@ -67,12 +66,11 @@ class MNISTLightningModule(pl.LightningModule):
         # can return multiple optimizers and learning_rate schedulers
         return torch.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
 
-    @pl.data_loader
     def train_dataloader(self):
         # REQUIRED
         return DataLoader(
             MNIST(
-                osp.expanduser("~"),
+                osp.expanduser("~/.cache/torch/datasets"),
                 train=True,
                 download=True,
                 transform=train_transforms(),
@@ -80,12 +78,11 @@ class MNISTLightningModule(pl.LightningModule):
             batch_size=self.hparams.batch_size,
         )
 
-    @pl.data_loader
     def val_dataloader(self):
         # OPTIONAL
         return DataLoader(
             MNIST(
-                osp.expanduser("~"),
+                osp.expanduser("~/.cache/torch/datasets"),
                 train=True,
                 download=True,
                 transform=eval_transforms(),
@@ -93,12 +90,11 @@ class MNISTLightningModule(pl.LightningModule):
             batch_size=self.hparams.batch_size,
         )
 
-    @pl.data_loader
     def test_dataloader(self):
         # OPTIONAL
         return DataLoader(
             MNIST(
-                osp.expanduser("~"),
+                osp.expanduser("~/.cache/torch/datasets"),
                 train=True,
                 download=True,
                 transform=eval_transforms(),
